@@ -1,0 +1,6 @@
+{
+  "name": "AI Image Generator and Editor",
+  "description": "A modern AI-powered image generation and editing tool using Gemini 2.5 Flash Image.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
