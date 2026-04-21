@@ -30,7 +30,7 @@ async function startServer() {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    `${process.env.APP_URL}/auth/callback`
+    process.env.APP_URL + "/auth/callback"
   );
 
   // Auth Routes
@@ -53,21 +53,7 @@ async function startServer() {
       const { tokens } = await oauth2Client.getToken(code as string);
       req.session!.tokens = tokens;
       
-      res.send(`
-        <html>
-          <body>
-            <script>
-              if (window.opener) {
-                window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS' }, '*');
-                window.close();
-              } else {
-                window.location.href = '/';
-              }
-            </script>
-            <p>Authentication successful. This window should close automatically.</p>
-          </body>
-        </html>
-      `);
+      res.send("<html><body><script>if (window.opener) { window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS' }, '*'); window.close(); } else { window.location.href = '/'; }</script><p>Authentication successful. This window should close automatically.</p></body></html>");
     } catch (error) {
       console.error("Error exchanging code for tokens:", error);
       res.status(500).send("Authentication failed");
@@ -93,7 +79,7 @@ async function startServer() {
       const tokens = req.session.tokens;
       const response = await axios.get("https://photoslibrary.googleapis.com/v1/mediaItems", {
         headers: {
-          Authorization: `Bearer ${tokens.access_token}`,
+          Authorization: "Bearer " + tokens.access_token,
         },
         params: {
           pageSize: 20,
@@ -109,18 +95,37 @@ async function startServer() {
 
   // Proxy to get image data as base64
   app.get("/api/photos/proxy", async (req, res) => {
+    if (!req.session?.tokens) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const { url } = req.query;
-    if (!url) return res.status(400).json({ error: "URL is required" });
+    if (!url || typeof url !== "string") {
+      return res.status(400).json({ error: "URL is required" });
+    }
 
     try {
-      const response = await axios.get(url as string, {
+      const parsedUrl = new URL(url);
+      // Security: Restrict to trusted Google Photos domains and prevent SSRF
+      if (!parsedUrl.hostname.endsWith(".googleusercontent.com")) {
+        return res.status(403).json({ error: "Forbidden: Untrusted domain" });
+      }
+
+      const response = await axios.get(url, {
         responseType: "arraybuffer",
+        timeout: 5000, // Security: Add timeout to prevent hanging connections
       });
-      const base64 = Buffer.from(response.data, "binary").toString("base64");
+
       const mimeType = response.headers["content-type"];
-      res.json({ data: `data:${mimeType};base64,${base64}`, mimeType });
-    } catch (error) {
-      console.error("Error proxying image:", error);
+      const mimeTypeStr = String(mimeType);
+      if (!mimeType || !mimeTypeStr.startsWith("image/")) {
+        return res.status(400).json({ error: "Invalid content type: Only images are allowed" });
+      }
+
+      const base64 = Buffer.from(response.data, "binary").toString("base64");
+      res.json({ data: "data:" + mimeType + ";base64," + base64, mimeType });
+    } catch (error: any) {
+      console.error("Error proxying image:", error.message);
       res.status(500).json({ error: "Failed to proxy image" });
     }
   });
@@ -141,7 +146,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log("Server running on http://localhost:3000");
   });
 }
 
