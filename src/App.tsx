@@ -134,7 +134,7 @@ const MessageItem = React.memo(({ message, onDownload }: { message: Message; onD
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
             <Button
-              variant="secondary"
+              aria-label="Download image" variant="secondary"
               size="icon"
               className="rounded-full"
               onClick={() => onDownload(message.imageUrl!, message.id)}
@@ -392,7 +392,7 @@ export default function App() {
                         </div>
                         <span className="text-sm font-medium">Google Photos</span>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={handleGoogleLogout} className="h-8 w-8 text-zinc-500 hover:text-destructive">
+                      <Button aria-label="Logout Google Photos" variant="ghost" size="icon" onClick={handleGoogleLogout} className="h-8 w-8 text-zinc-500 hover:text-destructive">
                         <LogOut className="w-4 h-4" />
                       </Button>
                     </div>
@@ -410,7 +410,7 @@ export default function App() {
               <section>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">History</h2>
-                  <Button variant="ghost" size="icon" onClick={clearChat} className="h-8 w-8 text-zinc-500 hover:text-destructive">
+                  <Button aria-label="Clear chat history" variant="ghost" size="icon" onClick={clearChat} className="h-8 w-8 text-zinc-500 hover:text-destructive">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -453,7 +453,7 @@ export default function App() {
               <Sparkles className="w-5 h-5" />
               <span className="font-bold">AI Studio</span>
             </div>
-            <Button variant="ghost" size="icon">
+            <Button aria-label="Open settings" variant="ghost" size="icon">
               <Settings2 className="w-5 h-5" />
             </Button>
           </header>
@@ -529,6 +529,7 @@ export default function App() {
                     <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 shrink-0">
                       <img src={attachedImage.data} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       <button 
+                        aria-label="Remove image"
                         onClick={() => setAttachedImage(null)}
                         className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5 hover:bg-black transition-colors"
                       >
@@ -570,6 +571,7 @@ export default function App() {
                             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-1">
                               {googlePhotos.map((photo) => (
                                 <button
+                                  aria-label={`Select photo ${photo.filename}`}
                                   key={photo.id}
                                   onClick={() => selectGooglePhoto(photo)}
                                   className="aspect-square rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:opacity-80 transition-opacity relative group"
@@ -589,7 +591,7 @@ export default function App() {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button 
-                          variant="ghost" 
+                          aria-label="Connect Google Photos" variant="ghost"
                           size="icon" 
                           className="rounded-full h-10 w-10 shrink-0"
                           onClick={handleGoogleConnect}
@@ -604,6 +606,7 @@ export default function App() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button 
+                        aria-label="Attach local image"
                         variant="ghost" 
                         size="icon" 
                         className="rounded-full h-10 w-10 shrink-0"
@@ -623,7 +626,7 @@ export default function App() {
                     onChange={handleFileChange}
                   />
 
-                  <textarea
+                  <textarea aria-label="Image prompt"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
@@ -638,7 +641,7 @@ export default function App() {
                   />
 
                   <Button 
-                    onClick={handleSend} 
+                    aria-label="Send prompt" onClick={handleSend}
                     disabled={(!input.trim() && !attachedImage) || isGenerating}
                     className="rounded-2xl h-10 px-4 gap-2 shrink-0"
                   >
