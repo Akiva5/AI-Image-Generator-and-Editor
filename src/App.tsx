@@ -471,11 +471,11 @@ export default function App() {
                         <Card className="overflow-hidden border-none shadow-xl group relative">
                           <img 
                             src={message.imageUrl} 
-                            alt="Generated" 
+                            alt="AI generated image based on your prompt"
                             className="w-full h-auto max-h-[600px] object-contain bg-zinc-100 dark:bg-zinc-800"
                             referrerPolicy="no-referrer"
                           />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-3">
                             <Button 
                               aria-label="Download image"
                               variant="secondary" 
@@ -572,7 +572,7 @@ export default function App() {
                                   className="aspect-square rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:opacity-80 transition-opacity relative group"
                                 >
                                   <img src={photo.baseUrl} alt={photo.filename} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center">
                                     <Plus className="w-6 h-6 text-white" />
                                   </div>
                                 </button>
