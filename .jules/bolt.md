@@ -1,4 +1,4 @@
 
-## 2024-05-20 - Memoization for Chat History
-**Learning:** In a chat application where typing in the input field triggers re-renders of the entire App component, the entire chat history re-renders every keystroke. Extracting the message item into a `React.memo` component and stabilizing callbacks with `useCallback` prevents this O(N) re-render cost.
-**Action:** Always extract items in long lists into memoized components if the parent state changes frequently (e.g., controlled inputs).
+## 2024-05-20 - Modular Memoization for Chat History
+**Learning:** For performance-critical list items in a chat app, extracting them into a separate modular component (e.g., `src/components/MessageItem.tsx`) and using `React.memo` is the most effective way to prevent O(N) re-renders during frequent state updates like typing. Stabilizing parent callbacks with `useCallback` is essential to maintain the memoization benefit.
+**Action:** Follow a modular structure for UI components that require optimization, placing them in `src/components/` instead of inlining them in large page-level components.
